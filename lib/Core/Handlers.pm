@@ -11,8 +11,9 @@ use strict;
 use Logger; # for logging "add_event" event
 
 my %handlers = (
-    raw_005 => \&handle_isupport,
-    raw_376 => \&handle_endofmotd
+    raw_005     => \&handle_isupport,
+    raw_376     => \&handle_endofmotd,
+	 raw_privmsg => \&handle_privsg
 );
 
 # applies each handler to an IRC instance
@@ -41,6 +42,16 @@ sub handle_endofmotd {
         return 1
     }
     return
+}
+
+sub handle_privmsg {
+  my ($irc, $data, @args) = @_;
+  $data =~ s/.//;
+  my $source  = $args[0];
+  my $target  = $args[2];
+  my $message = (split / /, $data, 4)[3];
+  $message =~ s/://;
+  $irc->fire_event(privmsg => $source, $target, $message);
 }
 
 1
