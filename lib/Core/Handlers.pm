@@ -12,7 +12,7 @@ use feature qw(switch);
 my %handlers = (
     raw_005     => \&handle_isupport,
     raw_376     => \&handle_endofmotd,
-    raw_privmsg => \&handle_privsg
+    raw_privmsg => \&handle_privmsg
 );
 
 # applies each handler to an IRC instance
@@ -104,7 +104,39 @@ sub handle_isupport {
             # fire the event that says we handled prefixes
             $irc->fire_event('isupport_got_prefixes');
             
-        } # ugly
+        }
+
+        # CHANMODES tells us what modes are which.
+        # we need this so we know which modes to expect to have parameters.
+        # modes are stored in $irc->{chmode}->{<letter>} = <type>
+        when ('CHANMODES') {
+
+            # CHANMODES=eIb,k,fl,ACDEFGJKLMNOPQSTcgimnpstz
+            # CHANMODES=
+            # (0) list modes,
+            # (1) modes that take parameters ALWAYS,
+            # (2) modes that take parameters only when setting,
+            # (3) modes that don't take parameters
+
+            my $type = 0;
+            foreach my $mode (split //, $val) {
+
+                # next type
+                if ($mode eq ',') {
+                    $type++;
+                    next
+                }
+
+                # store it
+                $irc->{chmode}->{$mode} = $type
+            }
+
+            # fire the event that says we handled CHANMODES
+            $irc->fire_event('isupport_got_chanmodes');
+
+        }
+
+        # ugly
 
     } } # too much nesting
 
@@ -123,13 +155,13 @@ sub handle_endofmotd {
 }
 
 sub handle_privmsg {
-  my ($irc, $data, @args) = @_;
-  $data =~ s/.//;
-  my $source  = $args[0];
-  my $target  = $args[2];
-  my $message = (split / /, $data, 4)[3];
-  $message =~ s/://;
-  $irc->fire_event(privmsg => $source, $target, $message);
+    my ($irc, $data, @args) = @_;
+    $data =~ s/.//;
+    my $source  = $args[0];
+    my $target  = $args[2];
+    my $message = (split / /, $data, 4)[3];
+    $message =~ s/://;
+    $irc->fire_event(privmsg => $source, $target, $message);
 }
 
 1
