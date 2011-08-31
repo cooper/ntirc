@@ -10,3 +10,5 @@ use lib 'lib';
 
 use IRC;    # libirc
 use Core;   # our libirc extensions (core handlers and stuff)
+
+use Interface::Bot;

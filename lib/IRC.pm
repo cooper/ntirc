@@ -10,7 +10,7 @@ use base qw(IRC::EventedObject);
 
 use IRC::EventedObject;
 
-our $VERSION = '0.0';
+our $VERSION = '0.1';
 
 # create a new IRC instance
 sub new {
@@ -51,7 +51,7 @@ sub parse {
     my $command = lc $args[1];
 
     # fire the raw_* event (several of which fire more events from there on)
-    $irc->fire_event("raw_$command", $data);
+    $irc->fire_event("raw_$command", $data, @args);
 
 }
 

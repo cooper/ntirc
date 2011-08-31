@@ -7,8 +7,7 @@ package Core::Handlers;
 
 use warnings;
 use strict;
-
-use Logger; # for logging "add_event" event
+use feature qw(switch);
 
 my %handlers = (
     raw_005 => \&handle_isupport,
@@ -28,8 +27,87 @@ sub apply_handlers {
 
 # handle RPL_ISUPPORT (005)
 sub handle_isupport {
-    my $irc = shift;
+    my ($irc, $data, @args) = @_;
 
+    my @stuff = @args[3..$#args];
+    my $val;
+
+    foreach my $support (@stuff) {
+
+        # get BLAH=blah types
+        if ($support =~ m/(.+?)=(.+)/) {
+            $support = $1;
+            $val     = $2;
+        }
+
+      given (uc $support) {
+
+        when ('PREFIX') {
+            # prefixes are stored in $irc->{prefix}->{<status level>}
+            # and their value is an array reference of [symbol, mode letter]
+
+            # it's hard to support so many different prefixes
+            # because we want pixmaps to match up on different networks.
+            # the main idea is that if we can find an @, use it as 0
+            # and work our way up and down from there. if we can't find
+            # an @, start at the top and work our way down. this still
+            # has a problem, though. networks that don't have halfop
+            # will have a different pixmap for voice than networks who do.
+            # so in order to avoid that we will look specially for + as well.
+
+            # tl;dr: use 0 at @ if @ exists; otherwise start at the top and work down
+            # (negative levels are likely if @ exists)
+
+            $val =~ m/\((.+?)\)(.+)/;
+            my ($modes, $prefixes, %final) = ($1, $2);
+
+            # does it have an @?
+            if ($prefixes =~ m/(.+)\@(.+)/) {
+                my $current = length $1; # the number of prefixes before @ is the top level
+                my @before  = split //, $1;
+                my @after   = split //, $2;
+
+                # before the @
+                foreach my $symbol (@before) {
+                    $final{$current} = $symbol;
+                    $current--
+                }
+
+                die 'wtf..'.$current if $current != 0;
+                $final{$current} = '@';
+                $current--; # for the @
+
+                # after the @
+                foreach my $symbol (@after) {
+                    $final{$current} = $symbol;
+                    $current--
+                }
+            }
+
+            # no @, so just start from the top
+            else {
+                my $current = length $prefixes;
+                foreach my $symbol (split //, $prefixes) {
+                    $final{$current} = $symbol;
+                    $current--
+                }
+            }
+
+            # store
+            my ($i, @modes) = (0, split(//, $modes));
+            foreach my $level (reverse sort keys %final) {
+                $irc->{prefix}->{$level} = [$final{$level}, $modes[$i]];
+                $i++
+            }
+
+            # fire the event that says we handled prefixes
+            $irc->fire_event('isupport_got_prefixes');
+            
+        } # ugly
+
+    } } # too much nesting
+
+    return 1
 }
 
 sub handle_endofmotd {
