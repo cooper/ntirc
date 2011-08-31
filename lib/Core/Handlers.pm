@@ -12,7 +12,7 @@ use feature qw(switch);
 my %handlers = (
     raw_005     => \&handle_isupport,
     raw_376     => \&handle_endofmotd,
-	 raw_privmsg => \&handle_privsg
+    raw_privmsg => \&handle_privsg
 );
 
 # applies each handler to an IRC instance
