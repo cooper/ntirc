@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+#---------------------------------------------------
+# ntirc: an insanely flexible IRC client.          |
+# Copyright (c) 2011, the NoTrollPlzNet developers |
+#---------------------------------------------------
+
+use warnings; # WARNS ME WHEN IM WRONG!!!!!! =]
+use strict;   # KEEPS ME HONEST!!!!!!!!!!!(:
+use lib 'lib';
+
+use IRC;    # libirc
+use Core;   # our libirc extensions (core handlers and stuff)
