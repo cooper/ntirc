@@ -10,7 +10,7 @@ use warnings;
 use strict;
 use IO::Socket::INET;
 
-my $irc = IRC->new();
+my $irc = IRC->new( nick => 'testbot' );
 
 my $socket = IO::Socket::INET->new(
     PeerAddr => 'irc.alphachat.net',
@@ -21,6 +21,17 @@ my $socket = IO::Socket::INET->new(
 
 # libirc will tell us what to send
 $irc->attach_event(send => \&send_data);
+
+$irc->attach_event(privmsg => sub {
+    shift;
+    my ($source, $target, $msg) = @_;
+    if ($msg =~ /^e:(.+)/) {
+        my $res = eval $1;
+        if (defined $res) {
+            $irc->send("PRIVMSG $target :$res");
+        }
+    }
+});
 
 # attach the core handler events
 $irc->Core::Handlers::apply_handlers();
@@ -38,5 +49,3 @@ sub send_data {
 while (my $line = <$socket>) {
     $irc->parse($line);
 }
-
-1

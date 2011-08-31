@@ -9,21 +9,26 @@ use strict;
 use base qw(IRC::EventedObject);
 
 use IRC::EventedObject;
+use IRC::User;
 
 our $VERSION = '0.1';
 
 # create a new IRC instance
 sub new {
-    my $class = shift;
+    my ($class, %opts) = @_;
 
     # XXX users will probably make a reference chain
     # $irc->{users}->[0]->{irc}->{users} and so on
-    bless {
+    bless my $irc = {
         users    => {},
         channels => {},
         events   => {}
     }, $class;
 
+    # create an IRC::User instance for myself
+    $irc->{me} = IRC::User->new($opts{nick});
+
+    return $irc
 }
 
 # parse a raw piece of IRC data

@@ -108,7 +108,7 @@ sub handle_isupport {
 
         # CHANMODES tells us what modes are which.
         # we need this so we know which modes to expect to have parameters.
-        # modes are stored in $irc->{chmode}->{<letter>} = <type>
+        # modes are stored in $irc->{chmode}->{<letter>} = { type => <type> }
         when ('CHANMODES') {
 
             # CHANMODES=eIb,k,fl,ACDEFGJKLMNOPQSTcgimnpstz
@@ -128,7 +128,7 @@ sub handle_isupport {
                 }
 
                 # store it
-                $irc->{chmode}->{$mode} = $type
+                $irc->{chmode}->{$mode}->{type} = $type
             }
 
             # fire the event that says we handled CHANMODES
