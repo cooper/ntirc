@@ -41,13 +41,15 @@ sub handle_isupport {
             $val     = $2;
         }
 
+        # fire an event saying that we got the support string
+        # for example, to update the network name when NETWORK is received.
+        $irc->fire_event('isupport_got_'.lc($val), $val);
+
       given (uc $support) {
 
-        # this will store the network name and fire an event
-        # saying that we got the network name
+        # store the network name
         when ('NETWORK') {
             $irc->{network} = $val;
-            $irc->fire_event('isupport_got_network');
         }
 
         when ('PREFIX') {
@@ -137,9 +139,6 @@ sub handle_isupport {
                 # store it
                 $irc->{chmode}->{$mode}->{type} = $type
             }
-
-            # fire the event that says we handled CHANMODES
-            $irc->fire_event('isupport_got_chanmodes');
 
         }
 
