@@ -43,7 +43,7 @@ sub handle_isupport {
 
         # fire an event saying that we got the support string
         # for example, to update the network name when NETWORK is received.
-        $irc->fire_event('isupport_got_'.lc($val), $val);
+        $irc->fire_event('isupport_got_'.lc($support), $val);
 
       given (uc $support) {
 
