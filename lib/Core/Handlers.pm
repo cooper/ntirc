@@ -43,6 +43,13 @@ sub handle_isupport {
 
       given (uc $support) {
 
+        # this will store the network name and fire an event
+        # saying that we got the network name
+        when ('NETWORK') {
+            $irc->{network} = $val;
+            $irc->fire_event('isupport_got_network');
+        }
+
         when ('PREFIX') {
             # prefixes are stored in $irc->{prefix}->{<status level>}
             # and their value is an array reference of [symbol, mode letter]
