@@ -192,33 +192,30 @@ sub handle_nick_taken {
 
 #So far it is only aware of itself, since there are no User objects other than the client
 sub handle_nick {
-	my ($irc, $data, @args) = @_;
-	my $user = get_nick($args[0]);
-	#If the user who's name is being taken is the client's, then change their own. Eventually fire_event('nick', $target, $new_nick)
-	#Will be implemented I'm sure
+    my ($irc, $data, @args) = @_;
+    my $user = get_nick($args[0]);
+    #If the user who's name is being taken is the client's, then change their own. Eventually fire_event('nick', $target, $new_nick)
+    #Will be implemented I'm sure
 
-	if ($user->{nick} eq $irc->{me}->{nick}) {
+    if ($user->{nick} eq $irc->{me}->{nick}) {
         $irc->{me}->{nick} = $args[2];
-	}
+    }
 }
 
-#This could be done without regex, but as it stands it looks very ugly the way I want to do it with splits,
-#but if there is any other possible way that doesnt look hideous then that method will be used.
-
 sub invert_symbols {
-	my ($irc) = shift;
-	my %symbols = %{$irc->{prefix}};
-	my %inverse = ();
-	foreach my $key (keys %symbols) {
-		my $symbol = $symbols{$key}[0];
-		$inverse{$symbol} = $key;
-	}
-	return %inverse;
+    my ($irc) = shift;
+    my %symbols = %{$irc->{prefix}};
+    my %inverse = ();
+    foreach my $key (keys %symbols) {
+        my $symbol = $symbols{$key}[0];
+        $inverse{$symbol} = $key;
+    }
+    return %inverse;
 }
 
 sub get_nick {
-	my $user_string = shift;
-	return (split /\!/, $user_string)[0];
+    my $user_string = shift;
+    return (split /\!/, $user_string)[0];
 }
 
 1
