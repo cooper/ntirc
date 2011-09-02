@@ -106,7 +106,7 @@ sub handle_isupport {
 
             # store
             my ($i, @modes) = (0, split(//, $modes));
-            foreach my $level (reverse sort keys %final) {
+            foreach my $level (reverse sort { $a <=> $b } keys %final) {
                 $irc->{prefix}->{$level} = [$final{$level}, $modes[$i]];
                 $i++
             }

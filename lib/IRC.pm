@@ -57,12 +57,13 @@ sub parse {
 
     # fire the raw_* event (several of which fire more events from there on)
     $irc->fire_event("raw_$command", $data, @args);
+    $irc->fire_event('raw', $data, @args); # for anything
 
 }
 
 # shortcut to the 'send' event
 sub send {
-    shift->fire_event('send', @_);
+    shift->fire_event(send => @_);
 }
 
 1
