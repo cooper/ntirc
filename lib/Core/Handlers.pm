@@ -193,13 +193,11 @@ sub handle_nick_taken {
 #So far it is only aware of itself, since there are no User objects other than the client
 sub handle_nick {
     my ($irc, $data, @args) = @_;
-    my $user = get_nick($args[0]);
+    my $user = IRC::User->new_from_string($args[0]);
     #If the user who's name is being taken is the client's, then change their own. Eventually fire_event('nick', $target, $new_nick)
     #Will be implemented I'm sure
 
-    if ($user->{nick} eq $irc->{me}->{nick}) {
-        $irc->{me}->{nick} = $args[2];
-    }
+    $user->set_nick($args[2]);
 }
 
 sub invert_symbols {
@@ -211,11 +209,6 @@ sub invert_symbols {
         $inverse{$symbol} = $key;
     }
     return %inverse;
-}
-
-sub get_nick {
-    my $user_string = shift;
-    return (split /\!/, $user_string)[0];
 }
 
 1
