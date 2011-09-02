@@ -49,3 +49,5 @@ sub send_data {
 while (my $line = <$socket>) {
     $irc->parse($line);
 }
+
+1
