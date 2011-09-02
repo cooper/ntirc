@@ -12,7 +12,7 @@ use feature qw(switch);
 my %handlers = (
     raw_005     => \&handle_isupport,
     raw_376     => \&handle_endofmotd,
-	raw_433		=> \&handle_nick_taken,
+    raw_433     => \&handle_nick_taken,
     raw_privmsg => \&handle_privmsg
 );
 
@@ -172,11 +172,11 @@ sub handle_privmsg {
 }
 
 sub handle_nick_taken {
-	my $irc = shift;
-	$irc->{temp_nick_count} = 0 unless exists $irc->{temp_nick_count};
-	$irc->{temp_nick_count}++;
-	my $nick = $irc->{me}->{nick};
-	$irc->send("NICK ${nick}_") unless $irc->{temp_nick_count} >= 5;
+    my $irc = shift;
+    $irc->{temp_nick_count} = 0 unless exists $irc->{temp_nick_count};
+    $irc->{temp_nick_count}++;
+    my $nick = $irc->{me}->{nick};
+    $irc->send("NICK ${nick}_") unless $irc->{temp_nick_count} >= 5;
 }
 
 1
