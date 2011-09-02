@@ -72,7 +72,6 @@ sub new_from_nick {
 # change the nickname and move the object's location
 sub set_nick {
     my ($user, $newnick) = @_;
-    print "$$user{nick}\n";
     delete $users{lc($user->{nick})};
     $user->{nick}       = $newnick;
     $users{lc $newnick} = $user;

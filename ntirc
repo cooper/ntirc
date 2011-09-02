@@ -12,3 +12,11 @@ use IRC;    # libirc
 use Core;   # our libirc extensions (core handlers and stuff)
 
 use Interface::Bot;
+
+my $pid = fork;
+if ($pid == 0) {
+    Interface::Bot::start();
+}
+else {
+    exit
+}

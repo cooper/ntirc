@@ -178,26 +178,26 @@ sub handle_nick_taken {
     $irc->{temp_nick_count}++;
     my $nick = $irc->{me}->{nick};
 
-	#If we have tried 4 or less times then send the NICK with _ appended
+	# if we have tried 4 or less times then send the NICK with _ appended
 	if ($irc->{temp_nick_count} <= 4) {
         $irc->send("NICK ${nick}_");
 	}
 
-	#If we have tried 5 times then reset the counter and give up
+	# if we have tried 5 times then reset the counter and give up
 	else {
 		$irc->{temp_nick_count} = 0;
 	}
 	
 }
 
-#So far it is only aware of itself, since there are no User objects other than the client
+# handle a nick change
 sub handle_nick {
     my ($irc, $data, @args) = @_;
     my $user = IRC::User->new_from_string($args[0]);
-    #If the user who's name is being taken is the client's, then change their own. Eventually fire_event('nick', $target, $new_nick)
-    #Will be implemented I'm sure
-
     $user->set_nick($args[2]);
+
+    # tell pplz
+    $irc->fire_event(user_changed_nick => $user, $args[2]);
 }
 
 sub invert_symbols {
