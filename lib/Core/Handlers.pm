@@ -200,15 +200,4 @@ sub handle_nick {
     $irc->fire_event(user_changed_nick => $user, $args[2]);
 }
 
-sub invert_symbols {
-    my ($irc) = shift;
-    my %symbols = %{$irc->{prefix}};
-    my %inverse = ();
-    foreach my $key (keys %symbols) {
-        my $symbol = $symbols{$key}[0];
-        $inverse{$symbol} = $key;
-    }
-    return %inverse;
-}
-
 1
