@@ -28,14 +28,18 @@ sub new {
 # and finds the user
 sub from_string {
     my $user_string = shift;
-    my $nick = lc((split /\!/, $user_string)[0]);
-    $nick =~ s/://;
+    $user_string =~ m/^:(.+)!(.+)\@(.+)/ or return;
+    my ($nick, $ident, $host) = ($1, $2, $3);
 
-    # if the user exists, return it
-    return $users{$nick} if exists $users{$nick};
+    # find the user, set the info
+    my $user = $users{lc $nick} or return; # or give up
 
-    # otherwise give up
-    return
+    if (defined $user) {
+        $user->{user} = $ident;
+        $user->{host} = $host;
+    }
+
+    return $user
 }
 
 # parses a :nick!ident@host
@@ -43,15 +47,18 @@ sub from_string {
 # finds it if it does
 sub new_from_string {
     my ($package, $user_string) = @_;
-    my $nick = (split /\!/, $user_string)[0];
-    $nick =~ s/://;
+    $user_string =~ m/^:(.+)!(.+)\@(.+)/ or return;
+    my ($nick, $ident, $host) = ($1, $2, $3);
 
-    # if the user exists, return it
-    return $users{lc $nick} if exists $users{lc $nick};
+    # find the user, set the info
+    my $user = defined $users{lc $nick} ? $users{lc $nick} : $package->new($nick); # or create a new one
 
-    # otherwise create a new one
-    $package->new($nick);
+    if (defined $user) {
+        $user->{user} = $ident;
+        $user->{host} = $host;
+    }
 
+    return $user
 }
 
 # find a user by his nick
