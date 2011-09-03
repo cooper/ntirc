@@ -164,12 +164,11 @@ sub handle_endofmotd {
 
 sub handle_privmsg {
     my ($irc, $data, @args) = @_;
-    $data =~ s/.//;
-    my $source  = $args[0];
+    my $user    = IRC::User->new_from_string($args[0]);
     my $target  = $args[2];
-    my $message = (split / /, $data, 4)[3];
+    my $message = (split /\s+/, $data, 4)[3];
     $message =~ s/://;
-    $irc->fire_event(privmsg => $source, $target, $message);
+    $irc->fire_event(privmsg => $user, $target, $message);
 }
 
 sub handle_nick_taken {
