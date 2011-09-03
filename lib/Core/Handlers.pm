@@ -177,16 +177,15 @@ sub handle_nick_taken {
     $irc->{temp_nick_count}++;
     my $nick = $irc->{me}->{nick};
 
-	# if we have tried 4 or less times then send the NICK with _ appended
-	if ($irc->{temp_nick_count} <= 4) {
+    # if we have tried 4 or less times then send the NICK with _ appended
+    if ($irc->{temp_nick_count} <= 4) {
         $irc->send("NICK ${nick}_");
-	}
+    }
 
-	# if we have tried 5 times then reset the counter and give up
-	else {
-		$irc->{temp_nick_count} = 0;
-	}
-	
+    # if we have tried 5 times then unset the counter and give up
+    else {
+        delete $irc->{temp_nick_count}
+    }
 }
 
 # handle a nick change
