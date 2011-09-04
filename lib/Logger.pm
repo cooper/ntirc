@@ -13,7 +13,7 @@ my @loggers;
 
 sub new {
     my ($class, $file, @flags) = @_;
-    open my $file_handle, '>' ,$file;
+    open my $file_handle, '>', $file;
     bless my $logger = {
         flags => \@flags,
         file  => $file_handle

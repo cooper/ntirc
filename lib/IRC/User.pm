@@ -9,30 +9,30 @@ use warnings;
 use strict;
 use base qw(IRC::EventedObject); # hopefully we can assume it is already loaded by IRC.pm
 
-our %users;
-
 # CLASS METHODS
 
 sub new {
-    my ($class, $nick) = @_;
+    my ($class, $irc, $nick) = @_;
 
     # create a new user object
     bless my $user = {
-        nick => $nick
+        nick   => $nick,
+        events => {}
     }, $class;
 
-    $users{lc $nick} = $user;
+    $user->{irc} = $irc; # creates a looping reference XXX
+    $irc->{users}->{lc $nick} = $user;
 }
 
 # parses a :nick!ident@host
 # and finds the user
 sub from_string {
-    my $user_string = shift;
+    my ($irc, $user_string) = @_;
     $user_string =~ m/^:(.+)!(.+)\@(.+)/ or return;
     my ($nick, $ident, $host) = ($1, $2, $3);
 
     # find the user, set the info
-    my $user = $users{lc $nick} or return; # or give up
+    my $user = $irc->{users}->{lc $nick} or return; # or give up
 
     if (defined $user) {
         $user->{user} = $ident;
@@ -46,12 +46,12 @@ sub from_string {
 # and creates a new user if it doesn't exist
 # finds it if it does
 sub new_from_string {
-    my ($package, $user_string) = @_;
+    my ($package, $irc, $user_string) = @_;
     $user_string =~ m/^:(.+)!(.+)\@(.+)/ or return;
     my ($nick, $ident, $host) = ($1, $2, $3);
 
     # find the user, set the info
-    my $user = defined $users{lc $nick} ? $users{lc $nick} : $package->new($nick); # or create a new one
+    my $user = defined $irc->{users}->{lc $nick} ? $irc->{users}->{lc $nick} : $package->new($irc, $nick); # or create a new one
 
     if (defined $user) {
         $user->{user} = $ident;
@@ -63,15 +63,15 @@ sub new_from_string {
 
 # find a user by his nick
 sub from_nick {
-    my $nick = lc shift;
-    exists $users{$nick} ? $users{$nick} : undef
+    my ($irc, $nick) = (shift, lc shift);
+    exists $irc->{users}->{$nick} ? $irc->{users}->{$nick} : undef
 }
 
 # find a user by his nick
 # or create one if it doesn't exist
 sub new_from_nick {
-    my ($package, $nick) = (shift, lc shift);
-    exists $users{$nick} ? $users{$nick} : $users{$nick} = $package->new($nick)
+    my ($package, $irc, $nick) = (shift, shift, lc shift);
+    exists $irc->{users}->{$nick} ? $irc->{users}->{$nick} : $irc->{users}->{$nick} = $package->new($nick)
 }
 
 # INSTANCE METHODS
@@ -79,9 +79,11 @@ sub new_from_nick {
 # change the nickname and move the object's location
 sub set_nick {
     my ($user, $newnick) = @_;
-    delete $users{lc($user->{nick})};
-    $user->{nick}       = $newnick;
-    $users{lc $newnick} = $user;
+    my $irc = $user->{irc};
+    delete $user->{irc}; # to break looping reference XXX
+    delete $irc->{users}->{lc $user->{nick}};
+    $user->{nick}                = $newnick;
+    $irc->{users}->{lc $newnick} = $user;
 
     # tell ppl
     $user->fire_event(nick_change => $newnick);

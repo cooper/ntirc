@@ -27,7 +27,7 @@ sub new {
     }, $class;
 
     # create an IRC::User instance for myself
-    $irc->{me} = IRC::User->new($opts{nick});
+    $irc->{me} = IRC::User->new($irc, $opts{nick});
 
     return $irc
 }
@@ -65,6 +65,45 @@ sub parse {
 # shortcut to the 'send' event
 sub send {
     shift->fire_event(send => @_);
+}
+
+# return a channel from its name
+sub channel_from_name {
+    my ($irc, $name) = @_;
+    IRC::Channel::from_name($irc, $name);
+}
+
+# create a new channel by its name
+# or return the channel if it exists
+sub new_channel_from_name {
+    my ($irc, $name) = @_;
+    IRC::Channel->new_from_name($irc, $name);
+}
+
+# create a new user by his nick
+# or return the user if it exists
+sub new_user_from_nick {
+    my ($irc, $nick) = @_;
+    IRC::User->new_from_nick($irc, $nick);
+}
+
+# return a user by his nick
+sub user_from_nick {
+    my ($irc, $nick) = @_;
+    IRC::User::from_nick($irc, $nick);
+}
+
+# create a new user by his :nick!ident@host string
+# or return the user if it exists
+sub new_user_from_string {
+    my ($irc, $nick) = @_;
+    IRC::User->new_from_string($irc, $nick);
+}
+
+# return a user by his :nick!ident@host string
+sub user_from_string {
+    my ($irc, $nick) = @_;
+    IRC::User::from_string($irc, $nick);
 }
 
 1

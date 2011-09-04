@@ -165,7 +165,7 @@ sub handle_endofmotd {
 
 sub handle_privmsg {
     my ($irc, $data, @args) = @_;
-    my $user    = IRC::User->new_from_string($args[0]);
+    my $user    = $irc->new_user_from_string($args[0]);
     my $target  = $args[2];
     my $message = (split /\s+/, $data, 4)[3];
     $message =~ s/://;
@@ -192,7 +192,7 @@ sub handle_nick_taken {
 # handle a nick change
 sub handle_nick {
     my ($irc, $data, @args) = @_;
-    my $user = IRC::User->new_from_string($args[0]);
+    my $user = $irc->new_user_from_string($args[0]);
     $user->set_nick($args[2]);
 
     # tell pplz
@@ -202,9 +202,8 @@ sub handle_nick {
 # user joins a channel
 sub handle_join {
     my ($irc, $data, @args) = @_;
-    my $user    = IRC::User->new_from_string($args[0]);
-    my $channel = IRC::Channel->new_from_name($args[2]);
-print "$channel\n";
+    my $user    = $irc->new_user_from_string($args[0]);
+    my $channel = $irc->new_channel_from_name($args[2]);
     $channel->add_user($user);
 }
 
