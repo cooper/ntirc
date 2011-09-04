@@ -168,8 +168,7 @@ sub handle_privmsg {
     my ($irc, $data, @args) = @_;
     my $user    = $irc->new_user_from_string($args[0]);
     my $target  = $args[2];
-    my $message = (split /\s+/, $data, 4)[3];
-    $message =~ s/://;
+    my $message = IRC::Utils::col((split /\s+/, $data, 4)[3]);
     $irc->fire_event(privmsg => $user, $target, $message);
 }
 
@@ -216,8 +215,7 @@ sub handle_got_topic {
     my $channel = $irc->new_channel_from_name($args[3]);
 
     # set the topic
-    my $topic = (split /\s+/, $data, 5)[4];
-    $topic =~ s/://;
+    my $topic = IRC::Utils::col((split /\s+/, $data, 5)[4]);
     $channel->set_topic($topic);
 
     # fire an event
