@@ -51,4 +51,13 @@ sub add_user {
     push @{$channel->{users}}, $user
 }
 
+# change the channel topic
+sub set_topic {
+    my ($channel, $topic) = @_;
+    $channel->{topic} = $topic;
+
+    # fire an event
+    $channel->fire_event(topic_changed => $topic);
+}
+
 1

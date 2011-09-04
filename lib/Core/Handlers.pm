@@ -11,6 +11,7 @@ use feature qw(switch);
 
 my %handlers = (
     raw_005     => \&handle_isupport,
+    raw_332     => \&handle_got_topic,
     raw_376     => \&handle_endofmotd,
     raw_433     => \&handle_nick_taken,
     raw_privmsg => \&handle_privmsg,
@@ -205,6 +206,22 @@ sub handle_join {
     my $user    = $irc->new_user_from_string($args[0]);
     my $channel = $irc->new_channel_from_name($args[2]);
     $channel->add_user($user);
+}
+
+# RPL_TOPIC
+sub handle_got_topic {
+    my ($irc, $data, @args) = @_;
+    # :s 332 cooper #fail :k
+    # get the channel
+    my $channel = $irc->new_channel_from_name($args[3]);
+
+    # set the topic
+    my $topic = (split /\s+/, $data, 5)[4];
+    $topic =~ s/://;
+    $channel->set_topic($topic);
+
+    # fire an event
+    $irc->fire_event(got_channel_topic => $channel, $topic);
 }
 
 1
