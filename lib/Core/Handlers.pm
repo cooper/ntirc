@@ -14,7 +14,8 @@ my %handlers = (
     raw_376     => \&handle_endofmotd,
     raw_433     => \&handle_nick_taken,
     raw_privmsg => \&handle_privmsg,
-    raw_nick    => \&handle_nick
+    raw_nick    => \&handle_nick,
+    raw_join    => \&handle_join
 );
 
 # applies each handler to an IRC instance
@@ -196,6 +197,15 @@ sub handle_nick {
 
     # tell pplz
     $irc->fire_event(user_changed_nick => $user, $args[2]);
+}
+
+# user joins a channel
+sub handle_join {
+    my ($irc, $data, @args) = @_;
+    my $user    = IRC::User->new_from_string($args[0]);
+    my $channel = IRC::Channel->new_from_name($args[2]);
+print "$channel\n";
+    $channel->add_user($user);
 }
 
 1

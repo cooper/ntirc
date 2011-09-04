@@ -10,6 +10,7 @@ use base qw(IRC::EventedObject);
 
 use IRC::EventedObject;
 use IRC::User;
+use IRC::Channel;
 
 our $VERSION = '0.1';
 
