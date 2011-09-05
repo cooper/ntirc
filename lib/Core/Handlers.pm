@@ -12,6 +12,8 @@ use feature qw(switch);
 my %handlers = (
     raw_005     => \&handle_isupport,
     raw_332     => \&handle_got_topic,
+    raw_333     => \&handle_got_topic_time,
+    raw_353     => \&handle_namesreply,
     raw_376     => \&handle_endofmotd,
     raw_433     => \&handle_nick_taken,
     raw_privmsg => \&handle_privmsg,
@@ -210,16 +212,78 @@ sub handle_join {
 # RPL_TOPIC
 sub handle_got_topic {
     my ($irc, $data, @args) = @_;
-    # :s 332 cooper #fail :k
+
     # get the channel
     my $channel = $irc->new_channel_from_name($args[3]);
 
-    # set the topic
-    my $topic = IRC::Utils::col((split /\s+/, $data, 5)[4]);
-    $channel->set_topic($topic);
+    # store the topic temporarily until we get RPL_TOPICWHOTIME
+    $channel->{temp_topic} = IRC::Utils::col((split /\s+/, $data, 5)[4]);
+}
 
-    # fire an event
-    $irc->fire_event(got_channel_topic => $channel, $topic);
+# RPL_TOPICWHOTIME
+sub handle_got_topic_time {
+    my ($irc, $data, @args) = @_;
+
+    # get the channel
+    my $channel = $irc->new_channel_from_name($args[3]);
+    my ($setter, $settime) = ($args[4], $args[5]);
+
+    # set the topic
+    $channel->set_topic(delete $channel->{temp_topic}, $setter, $settime);
+
+    # fire event
+    $irc->fire_event(channel_got_topic => $channel->{topic}->{topic}, $setter, $settime);
+}
+
+# RPL_NAMREPLY
+sub handle_namesreply {
+    my ($irc, $data, @args) = @_;
+    my $channel = $irc->new_channel_from_name($args[4]);
+
+    # names with their prefixes in front
+    my @names = split /\s+/, IRC::Utils::col(join ' ', @args[5..$#args]);
+
+    # get a hash of prefixes
+    my %prefixes;
+    foreach my $level (keys %{$irc->{prefix}}) {
+        $prefixes{$irc->{prefix}->{$level}->[0]} = $level
+    }
+
+    NICK: foreach my $nick (@names) {
+
+        # status levels to apply
+        my @levels;
+
+        LETTER: foreach my $letter (split //, $nick) {
+
+            # is it a prefix?
+            if (exists $prefixes{$letter}) {
+                $nick =~ s/.//;
+
+                # add to the levels to apply
+                push @levels, $prefixes{$letter}
+            }
+
+            # not a prefix
+            else {
+                last LETTER
+            }
+
+        }
+
+        my $user = $irc->new_user_from_nick($nick);
+        $user->set_nick($nick);
+
+        # add the user to the channel
+        $channel->add_user($user);
+
+        # apply the levels
+        foreach my $level (@levels) {
+            $channel->set_status($user, $level);
+            $irc->fire_event(channel_set_user_status_level => $user, $level);
+        }
+
+    }
 }
 
 1

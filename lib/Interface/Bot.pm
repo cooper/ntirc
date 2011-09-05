@@ -13,7 +13,7 @@ use IO::Socket::INET;
 my $irc = IRC->new( nick => 'testbot' );
 
 my $socket = IO::Socket::INET->new(
-    PeerAddr => 'irc.alphachat.net',
+    PeerAddr => 's2.notroll.net',
     PeerPort => 6667,
     Type     => SOCK_STREAM,
     Proto    => 'tcp'
@@ -36,7 +36,7 @@ $irc->attach_event(privmsg => sub {
 # attach the core handler events
 $irc->Core::Handlers::apply_handlers();
 
-$irc->{autojoin} = ['#nt'];
+$irc->{autojoin} = ['#k'];
 $irc->send('NICK testbot');
 $irc->send('USER testbot * * :testbot');
 

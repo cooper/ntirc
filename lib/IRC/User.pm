@@ -20,7 +20,7 @@ sub new {
         events => {}
     }, $class;
 
-    $user->{irc} = $irc; # creates a looping reference XXX
+    $user->{irc}              = $irc; # creates a looping reference XXX
     $irc->{users}->{lc $nick} = $user;
 }
 
@@ -70,8 +70,13 @@ sub from_nick {
 # find a user by his nick
 # or create one if it doesn't exist
 sub new_from_nick {
-    my ($package, $irc, $nick) = (shift, shift, lc shift);
-    exists $irc->{users}->{$nick} ? $irc->{users}->{$nick} : $irc->{users}->{$nick} = $package->new($nick)
+    my ($package, $irc, $nick) = @_;
+
+    if (exists $irc->{users}->{lc $nick}) {
+        return $irc->{users}->{lc $nick}
+    }
+
+    return $irc->{users}->{lc $nick} = $package->new($irc, $nick)
 }
 
 # INSTANCE METHODS

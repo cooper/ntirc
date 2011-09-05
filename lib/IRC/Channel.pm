@@ -19,7 +19,8 @@ sub new {
         name   => $name,
         users  => [],
         modes  => {},
-        events => {}
+        events => {},
+        status => {}
     };
 
     $channel->{irc} = $irc; # creates a looping reference XXX
@@ -47,17 +48,38 @@ sub new_from_name {
 # add a user to a channel
 sub add_user {
     my ($channel, $user) = @_;
+
+    # don't add if already there
+    return if grep { $_ == $user } @{$channel->{users}};
+
     $channel->fire_event(user_join => $user);
     push @{$channel->{users}}, $user
 }
 
 # change the channel topic
 sub set_topic {
-    my ($channel, $topic) = @_;
-    $channel->{topic} = $topic;
+    my ($channel, $topic, $setter, $time) = @_;
 
-    # fire an event
-    $channel->fire_event(topic_changed => $topic);
+    # fire a "changed" event
+    # but not if this is the first time the topic has been set
+    $channel->fire_event(topic_changed => $topic, $setter, $time) if exists $channel->{topic};
+
+    $channel->{topic} = {
+        topic  => $topic,
+        setter => $setter,
+        time   => $time
+    }
+}
+
+# set a user's channel status
+sub set_status {
+    my ($channel, $user, $level) = @_;
+
+    # add the user to the status array
+    push @{$channel->{status}->{$level}}, $user;
+
+    # fire event
+    $channel->fire_event(set_user_status => $user, $level);
 }
 
 1
