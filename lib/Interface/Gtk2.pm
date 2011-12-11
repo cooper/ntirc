@@ -56,11 +56,12 @@ $irc->attach_event(privmsg => sub {
     $window->set_icon_from_file($main::app{icon});
     $window->set_resizable(bool::true);
     $window->set_default_size(850, 400);
+    $window->signal_connect(destroy => sub { Gtk2->main_quit() });
 
     # notebook
     $notebook = Gtk2::Notebook->new;
     $notebook->set_scrollable(bool::true);
-    $notebook->set_show_border(bool::false);
+    $notebook->set_show_border(0);
 
     # home tab (WebKitWebView in a ScrolledWindow)
     $home    = Gtk2::HPaned->new();
