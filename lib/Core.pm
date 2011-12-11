@@ -9,6 +9,8 @@ package Core;
 use warnings;
 use strict;
 
+use IO::Async::Protocol::LineStream;
+
 use Core::Handlers;
 use Core::Async::IRC;
 
