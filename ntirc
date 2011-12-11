@@ -8,12 +8,6 @@ use warnings; # WARNS ME WHEN IM WRONG!!!!!! =]
 use strict;   # KEEPS ME HONEST!!!!!!!!!!!(:
 use lib 'lib';
 
-
-use IRC;    # libirc
-use Core;   # our libirc extensions (core handlers and stuff)
-
-use Interface::Gtk2;
-
 our %app = (
     name     => 'ntirc',
     version  => 'prerelease-dev',
@@ -23,6 +17,9 @@ our %app = (
 
 our ($loop, $irc); # IO::Async::Loop
 
-
-my $interface = 'Interface::Gtk2';
+my $interface     = 'Interface::Gtk2';
+my $interfacename = $interface;
+$interfacename    =~ s/::/\//g;
+$interfacename   .= '.pm';
+require $interfacename;
 $interface->start();
