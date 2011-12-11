@@ -1,1 +1,22 @@
-kk
+INTERFACES
+------------------------------------------------------------------------------------------
+
+ntirc supports several different "interfaces," or ways to use the client. Each interface
+turns the client into something different than another interface. The following interfaces
+exist at this time:
+
+    * Gtk2       - an all-in-one GTK+2 graphical interface based on WebKit.
+    * Gtk3       - an all-in-one GTK+3 graphical interface based on WebKit.
+    * Core       - a core-only (no GUI) interface used by a Gtk#Client.
+    * Gtk2Client - a GTK+2 WebKit client which uses a remote Core.
+    * Gtk3Client - a GTK+3 WebKit client which uses a remote Core.
+    * Bot        - an extremely basic IRC bot for experimenting with libirc.
+
+
+BUGS (and annoyances)
+------------------------------------------------------------------------------------------
+
+in Interface::Base::Generic:
+
+    * the nick pane on the left does not stretch to the bottom of the buffer.
+    * buffer does not automatically lock to the bottom of the scrollable pane.
