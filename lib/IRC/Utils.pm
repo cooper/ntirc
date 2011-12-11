@@ -23,7 +23,7 @@ sub escape {
 }
 
 package bool;
-sub true  () { 1     }
-sub false () { undef }
+sub true  () { 1 }
+sub false () { 0 }
 
 1

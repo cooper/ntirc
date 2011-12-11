@@ -61,7 +61,7 @@ $irc->attach_event(privmsg => sub {
     # notebook
     $notebook = Gtk2::Notebook->new;
     $notebook->set_scrollable(bool::true);
-    $notebook->set_show_border(0);
+    $notebook->set_show_border(bool::false);
 
     # home tab (WebKitWebView in a ScrolledWindow)
     $home    = Gtk2::HPaned->new();
