@@ -20,3 +20,35 @@ in Interface::Base::Generic:
 
     * the nick pane on the left does not stretch to the bottom of the buffer.
     * buffer does not automatically lock to the bottom of the scrollable pane.
+
+PLANS
+------------------------------------------------------------------------------------------
+
+for the WebKitGTK+ interfaces -
+
+    * Core - the Core will contain a WebSocket server and libirc. This program will
+      maintain active IRC connections at all times, similarly to an IRC bouncer.
+
+    * Gtk#Client - the client which will connect to a remote Core via WebSocket, based
+      on WebKitGTK+. A version of WebKit with WebSocket and similar new features is
+      required. Like Gtk#, Gtk#Client supports plugins and themes.
+
+    * Gtk# - an all-in-one WebKitGTK+ client which uses libirc, contains an internal
+      WebSocket server and WebSocket client, and only maintains IRC connections while
+      the graphical interface is running. A version of WebKit with WebSocket and
+      similar new features is required. Because this is an "all-in-one" client, a separate
+      Core is not required. Like Gtk#Client, Gtk# supports plugins and themes.
+
+    * Browser - an interface which can be accessed via a modern WebKit browser that has
+      support for WebSocket. Browser works similar to Gtk2#Client, but unlike Gtk#Client,
+      no plugins or themes are available. Browser is designed for away-from-home use.
+
+    -- Core to Client protocol
+
+        Each Client must identify itself to a Core with two passwords. The connection from
+        the Client to the Core will typically be TLS-encrypted. The connection is through
+        a WebSocket connection. The easiest way to explain the jobs of the Core and the
+        Client is this: the Core is a mastermind, but the Client is an idiot. WebSocket
+        events and messages are more in the sense of "do this," not "read this information
+        and make something useful of it." Core does all the work. Client only takes the
+        credit.
