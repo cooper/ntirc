@@ -17,7 +17,7 @@ use Gtk2::WebKit;
 use IRC;                            # libirc
 use Core;                           # libirc handlers, etc.
 use Interface::Gtk2::WebKitWebView; # subclass of Gtk2::WebKit::WebView
-use Interface::Gtk2::WebSocket;     # 
+use Interface::Gtk2::WebSocket;     # WebSocket server class
 
 our ($window, $notebook, $home, $tree, $webview, $sw);
 
@@ -67,12 +67,12 @@ sub start {
     $sw->add($webview);
     $home->add($sw);
 
-    # set up webview
+    # set up webview (TODO: this is deprecated..)
     $webview->signal_connect('title-changed' => sub {
         my (undef, undef, $title) = @_;
         $window->set_title("$::app{name}: $title");
     });
-    $webview->load_uri("file://$main::app{location}/lib/Interface/Generic/www/index.html");
+    $webview->load_uri("file://$main::app{location}/lib/Interface/Base/Generic/www/index.html");
 
     # set WebKitWebView settings (WebKitWebSettings)
     my $settings = Gtk2::WebKit::WebSettings->new;
