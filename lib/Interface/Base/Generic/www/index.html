@@ -20,7 +20,8 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
-            /*createServer(0, 'NoTrollPlzNet');
+            $('sidebar').style.display = 'block';
+            createServer(0, 'NoTrollPlzNet');
             createChannel(0, '#some-channel');
             createChannel(0, '#k');
 
@@ -51,7 +52,7 @@
             addUserToChannel(0, '#k', 'foxy');
             addUserToChannel(0, '#k', 'foxy|laptop');
             addUserToChannel(0, '#k', 'clayfreeman');
-            focusChannel(0, '#k');*/
+            focusChannel(0, '#k');
             window.onresize();
         });
     </script>
@@ -60,10 +61,10 @@
         <div id="main">
             <!--
             <div id="login">
-                <span class="login-type">Hostname</span><input type="text" /><br />
-                <span class="login-type">Password</span><input type="password" /><br />
-                <span class="login-type">Password 2</span><input type="password" />
-                <input type="submit" value="Login" />
+                <span class="login-type">Hostname</span><input class="login" type="text" /><br />
+                <span class="login-type">Password</span><input class="login" type="password" /><br />
+                <span class="login-type">Password 2</span><input class="login" type="password" />
+                <input class="login" type="submit" value="Login" />
             </div>
             -->
         </div>
