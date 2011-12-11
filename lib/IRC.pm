@@ -6,12 +6,16 @@ package IRC;
 
 use warnings;
 use strict;
-use base qw(IRC::EventedObject);
+use base qw(IRC::EventedObject IRC::Functions::IRC);
 
 use IRC::EventedObject;
 use IRC::User;
 use IRC::Channel;
+use IRC::Handlers;
 use IRC::Utils;
+use IRC::Functions::IRC;
+use IRC::Functions::User;
+use IRC::Functions::Channel;
 
 our $VERSION = '0.1';
 
@@ -19,29 +23,32 @@ our $VERSION = '0.1';
 sub new {
     my ($class, %opts) = @_;
 
-    # XXX users will probably make a reference chain
-    # $irc->{users}->[0]->{irc}->{users} and so on
-    bless my $irc = {
-        users    => {},
-        channels => {},
-        events   => {}
-    }, $class;
-
-    # create an IRC::User instance for myself
-    $irc->{me} = IRC::User->new($irc, $opts{nick});
+    bless my $irc = {}, $class;
+    $irc->configure($opts{nick});
 
     return $irc
 }
 
+sub configure {
+    my ($self, $nick) = @_;
+
+    # XXX users will probably make a reference chain
+    # $irc->{users}->[0]->{irc}->{users} and so on
+    $self->{users}    = {};
+    $self->{channels} = {};
+    $self->{events}   = {};
+    $self->{me}       = IRC::User->new($self, $nick);
+}
+
 # parse a raw piece of IRC data
-sub parse {
+sub parse_data {
     my ($irc, $data) = @_;
 
     $data =~ s/(\0|\r)//g; # remove unwanted characters
 
     # parse one line at a time
     if ($data =~ m/\n/) {
-        $irc->parse($_) foreach split "\n", $data;
+        $irc->parse_data($_) foreach split "\n", $data;
         return
     }
 

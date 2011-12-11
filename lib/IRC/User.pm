@@ -7,7 +7,7 @@ package IRC::User;
 
 use warnings;
 use strict;
-use base qw(IRC::EventedObject); # hopefully we can assume it is already loaded by IRC.pm
+use base qw(IRC::EventedObject IRC::Functions::User);
 
 # CLASS METHODS
 
@@ -22,6 +22,11 @@ sub new {
 
     $user->{irc}              = $irc; # creates a looping reference XXX
     $irc->{users}->{lc $nick} = $user;
+
+    # fire new user event
+    $irc->fire_event(new_user => $user);
+
+    return $user
 }
 
 # parses a :nick!ident@host
@@ -85,13 +90,15 @@ sub new_from_nick {
 sub set_nick {
     my ($user, $newnick) = @_;
     my $irc = $user->{irc};
-    delete $user->{irc}; # to break looping reference XXX
+
     delete $irc->{users}->{lc $user->{nick}};
+
+    my $oldnick                  = $user->{nick};
     $user->{nick}                = $newnick;
     $irc->{users}->{lc $newnick} = $user;
 
     # tell ppl
-    $user->fire_event(nick_change => $newnick);
+    $user->fire_event(nick_change => $oldnick, $newnick);
 }
 
 1

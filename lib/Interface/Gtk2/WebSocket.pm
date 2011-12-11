@@ -1,15 +1,14 @@
-#---------------------------------------------------
 # ntirc: an insanely flexible IRC client.          |
 # Copyright (c) 2011, the NoTrollPlzNet developers |
-# Core.pm: the core components of ntirc.           |
+# WebSocket: communication from WebKit to libirc.  |
 #---------------------------------------------------
-
-package Core;
+package Interface::Gtk2::WebSocket;
 
 use warnings;
 use strict;
 
-use Core::Handlers;
-use Core::Async::IRC;
+use Net::Async::WebSocket::Server; # installed with -f
+
+
 
 1

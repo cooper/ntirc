@@ -23,8 +23,7 @@ my $socket = IO::Socket::INET->new(
 $irc->attach_event(send => \&send_data);
 
 $irc->attach_event(privmsg => sub {
-    shift;
-    my ($source, $target, $msg) = @_;
+    my (undef, $source, $target, $msg) = @_;
     if ($msg =~ /^e:(.+)/) {
         my $res = eval $1;
         if (defined $res) {

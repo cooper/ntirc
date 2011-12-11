@@ -1,0 +1,25 @@
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+ 
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+    display: none;
+}
+ 
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #666;
+    border-left: 1px solid #000;
+}
+ 
+::-webkit-scrollbar-thumb {
+    height: 20px;
+    border-left: 1px solid #000;
+    background-color: #111;
+}

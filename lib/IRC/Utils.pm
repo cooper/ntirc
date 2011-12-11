@@ -12,7 +12,18 @@ use strict;
 sub col {
     my $str = shift;
     $str =~ s/^://;
-    $str
+    return $str
 }
+
+# escape quotes and escapes
+sub escape {
+    my $str = shift;
+    $str =~ s/('|"|\\)/\\$1/g;
+    return $str
+}
+
+package bool;
+sub true  () { 1     }
+sub false () { undef }
 
 1

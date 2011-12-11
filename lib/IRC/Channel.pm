@@ -7,7 +7,7 @@ package IRC::Channel;
 
 use warnings;
 use strict;
-use base qw(IRC::EventedObject);
+use base qw(IRC::EventedObject IRC::Functions::Channel);
 
 # CLASS METHODS
 
@@ -25,6 +25,10 @@ sub new {
 
     $channel->{irc} = $irc; # creates a looping reference XXX
     $irc->{channels}->{lc $name} = $channel;
+
+    # fire new channel event
+    $irc->fire_event(new_channel => $channel);
+
     return $channel
 }
 
@@ -54,6 +58,12 @@ sub add_user {
 
     $channel->fire_event(user_join => $user);
     push @{$channel->{users}}, $user
+}
+
+sub remove_user {
+    my ($channel, $user) = @_;
+    $channel->fire_event(user_part => $user);
+    @{$channel->{users}} = grep { $_ != $user } @{$channel->{users}};
 }
 
 # change the channel topic
