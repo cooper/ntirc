@@ -26,6 +26,9 @@ sub start {
     # create IO::Async::Loop
     $main::loop = IO::Async::Loop::Glib->new();
 
+    # create WebSocket server
+    Interface::Gtk2::WebSocket->listen();
+
     # create IRC object
     $main::irc = my $irc = Core::Async::IRC->new(
         nick => 'WilliamH',
@@ -78,7 +81,6 @@ sub start {
     my $settings = Gtk2::WebKit::WebSettings->new;
     $settings->set('enable-developer-extras', 1);
     $webview->set_settings($settings);
-
 
     # show it and start main loop
     $window->add($home);

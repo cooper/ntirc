@@ -108,6 +108,8 @@ div.server.active {
 }
 
 .user {
+    background-size: 10px 10px;
+    padding-left: 15px;
     height: 22px;
     line-height: 22px;
     text-shadow: 1px 1px 1px #000;
@@ -177,7 +179,7 @@ div.server.active {
     border-top-color: yellow;
 }
 
-.nick {
+.nick, .asterisk {
     width: 80px;
     vertical-align: top;
     font-family: monospace;
@@ -194,7 +196,7 @@ div.server.active {
     display: block;
 }
 
-.message {
+.message, .action, .channel-notify {
     vertical-align: top;
     font-family: monospace;
     padding: 2px 0 2px 5px;
@@ -228,3 +230,30 @@ input.login {
     color: #fff;
     padding: 3px;
 }
+
+/* notifcations */
+
+.channel-notify {
+    text-shadow: 1px 1px 1px #222;
+}
+
+.channel-notify-join {
+    color: #1BE035;
+}
+
+.channel-notify-part {
+    color: #C4792D;
+}
+
+/* user list icons */
+.user-status--3 { background: url(../img/userlist/half-yellow.png) no-repeat left center; }
+.user-status--2 { background: url(../img/userlist/yellow.png)      no-repeat left center; }
+.user-status--1 { background: url(../img/userlist/light-blue.png)  no-repeat left center; }
+.user-status-0  { background: url(../img/userlist/light-green.png) no-repeat left center; }
+.user-status-1  { background: url(../img/userlist/red.png)         no-repeat left center; }
+.user-status-2  { background: url(../img/userlist/purple.png)      no-repeat left center; }
+.user-status-3  { background: url(../img/userlist/orange.png)      no-repeat left center; }
+.user-status-4  { background: url(../img/userlist/hot-pink.png)    no-repeat left center; }
+.user-status-5  { background: url(../img/userlist/blue.png)        no-repeat left center; }
+.user-status-6  { background: url(../img/userlist/brown.png)       no-repeat left center; }
+.user-status-7  { background: url(../img/userlist/green.png)       no-repeat left center; }

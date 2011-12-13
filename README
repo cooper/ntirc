@@ -20,6 +20,7 @@ in Interface::Base::Generic:
 
     * the nick pane on the left does not stretch to the bottom of the buffer.
     * buffer does not automatically lock to the bottom of the scrollable pane.
+    * shadow under the topic bar is covered by the nick pane.
 
 PLANS
 ------------------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ for the WebKitGTK+ interfaces -
       Core is not required. Like Gtk#Client, Gtk# supports plugins and themes.
 
     * Browser - an interface which can be accessed via a modern WebKit browser that has
-      support for WebSocket. Browser works similar to Gtk2#Client, but unlike Gtk#Client,
+      support for WebSocket. Browser works similarly to Gtk#Client, but unlike Gtk#Client,
       no plugins or themes are available. Browser is designed for away-from-home use.
 
     -- Core to Client protocol
@@ -52,3 +53,15 @@ for the WebKitGTK+ interfaces -
         events and messages are more in the sense of "do this," not "read this information
         and make something useful of it." Core does all the work. Client only takes the
         credit.
+
+FEATURES OF WEBKIT INTERFACE (reminders, because I will forget about them)
+------------------------------------------------------------------------------------------
+
+    * Ctrl+Down moves to next tab. Ctrl+Up moves to previous tab.
+
+    * A flash of the input box's top border indicates that the scroll pane is locked.
+
+    * Clicking the tab of the already-focused view scrolls to the bottom of the pane.
+
+    * Ctrl+A in the input box will select the input, but in a chat buffer it will select
+      the entire buffer.
