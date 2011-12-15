@@ -26,9 +26,9 @@ sub execute {
     }
 
     # remove the last extra comma and append );
-    $string =~ s/, $//;
+    $string  =~ s/, $//;
+    $string  =~ s/\n/\\\n/g;
     $string .= q|);|;
-
     return $webview->execute_script($string);
 }
 

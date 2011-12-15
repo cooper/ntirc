@@ -5,13 +5,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <meta http-equiv="Content-Style-Type" content="text/css" /> 
         <link rel="stylesheet" type="text/css" href="css/remove_defaults.css" />
-        <link rel="stylesheet" type="text/css" href="css/chat.css" />
-        <link rel="stylesheet" type="text/css" href="css/scrollbar.css" />
         <script type="text/javascript" src="js/mootools-1.4.2.js"></script>
         <script type="text/javascript" src="js/base.js"></script>
         <script type="text/javascript" src="js/sprintf.js"></script>
         <script type="text/javascript" src="js/drag.js"></script>
         <script type="text/javascript" src="js/shortcut.js"></script>
+        <script type="text/javascript" src="js/themes.js"></script>
         <script type="text/javascript" src="js/interface.js"></script>
         <script type="text/javascript" src="js/interface-shortcuts.js"></script>
         <script type="text/javascript" src="js/IRCevents.js"></script>
@@ -23,6 +22,7 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
+            window.themeLoaded = function () {
             $('sidebar').style.display = 'block';
             createServer(0, 'NoTrollPlzNet');
             createChannel(0, '#k');
@@ -70,20 +70,9 @@
             channelNotify(0, '#k', 'part', 'rose has left #k (Leaving)');
 
             window.onresize();
+            };
         });
     </script>
     <body><div id="body" class="100percent">
-        <div id="sidebar"></div>
-        <div id="main">
-            <!--
-            <div id="login">
-                <span class="login-type">Hostname</span><input class="login" type="text" /><br />
-                <span class="login-type">Password</span><input class="login" type="password" /><br />
-                <span class="login-type">Password 2</span><input class="login" type="password" />
-                <input class="login" type="submit" value="Login" />
-            </div>
-            -->
-        </div>
-        <div id="widthbyheight"></div>
     </div></body>
 </html>

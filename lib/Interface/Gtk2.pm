@@ -14,10 +14,11 @@ use Gtk2 -init;
 use IO::Async::Loop::Glib;
 use Gtk2::WebKit;
 
-use IRC;                            # libirc
-use Core;                           # libirc handlers, etc.
-use Interface::Gtk2::WebKitWebView; # subclass of Gtk2::WebKit::WebView
-use Interface::Gtk2::WebSocket;     # WebSocket server class
+use IRC;                              # libirc
+use Core;                             # libirc handlers, etc.
+use Interface::Gtk2::WebKitWebView;   # subclass of Gtk2::WebKit::WebView
+use Interface::Gtk2::WebSocket;       # WebSocket server class
+use Interface::Base::Generic::Themes; # themes
 
 our ($window, $notebook, $home, $tree, $webview, $sw);
 
@@ -66,15 +67,21 @@ sub start {
     # home tab (WebKitWebView in a ScrolledWindow)
     $home    = Gtk2::HPaned->new();
     $sw      = Gtk2::ScrolledWindow->new;
-    $webview = Interface::Gtk2::WebKitWebView->new;
+    $webview = $main::webview = Interface::Gtk2::WebKitWebView->new;
     $sw->add($webview);
     $home->add($sw);
 
-    # set up webview (TODO: this is deprecated..)
+    # set up webview (TODO: title-changed is deprecated..)
     $webview->signal_connect('title-changed' => sub {
         my (undef, undef, $title) = @_;
         $window->set_title("$::app{name}: $title");
     });
+
+    # load the theme
+    $webview->signal_connect('document-load-finished' => sub {
+        Interface::Base::Generic::Themes::parse_file("$main::app{location}/data/themes/default-0.1.ntss");
+    });
+
     $webview->load_uri("file://$main::app{location}/lib/Interface/Base/Generic/www/index.html");
 
     # set WebKitWebView settings (WebKitWebSettings)
