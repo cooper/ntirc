@@ -70,16 +70,12 @@ sub start {
     $webview = $main::webview = Interface::Gtk2::WebKitWebView->new;
     $sw->add($webview);
     $home->add($sw);
+    $window->add($home);
 
     # set up webview (TODO: title-changed is deprecated..)
     $webview->signal_connect('title-changed' => sub {
         my (undef, undef, $title) = @_;
         $window->set_title("$::app{name}: $title");
-    });
-
-    # load the theme
-    $webview->signal_connect('document-load-finished' => sub {
-        Interface::Base::Generic::Themes::parse_file("$main::app{location}/data/themes/default-0.1.ntss");
     });
 
     $webview->load_uri("file://$main::app{location}/lib/Interface/Base/Generic/www/index.html");
@@ -89,9 +85,11 @@ sub start {
     $settings->set('enable-developer-extras', 1);
     $webview->set_settings($settings);
 
-    # show it and start main loop
-    $window->add($home);
-    $window->show_all;
+    # load the theme
+    $webview->signal_connect('document-load-finished' => sub {
+        Interface::Base::Generic::Themes::parse_file("$main::app{location}/data/themes/default-0.1.ntss");
+        $window->show_all;
+    });
 
     Gtk2->main
 }
