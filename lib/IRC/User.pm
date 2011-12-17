@@ -101,4 +101,12 @@ sub set_nick {
     $user->fire_event(nick_change => $oldnick, $newnick);
 }
 
+sub channels {
+    my ($user, @channels) = shift;
+    foreach my $channel (values %{$user->{irc}->{channels}}) {
+        push @channels, $channel if $channel->has_user($user)
+    }
+    return @channels
+}
+
 1

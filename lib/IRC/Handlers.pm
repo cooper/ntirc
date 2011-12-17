@@ -20,7 +20,8 @@ my %handlers = (
     raw_privmsg => \&handle_privmsg,
     raw_nick    => \&handle_nick,
     raw_join    => \&handle_join,
-    raw_part    => \&handle_part
+    raw_part    => \&handle_part,
+    raw_quit    => \&handle_quit
 );
 
 # applies each handler to an IRC instance
@@ -302,7 +303,7 @@ sub handle_namesreply {
         # apply the levels
         foreach my $level (@levels) {
             $channel->set_status($user, $level);
-            $irc->fire_event(channel_set_user_status_level => $user, $level);
+            $irc->fire_event(channel_set_user_status => $user, $level);
         }
 
     }
@@ -312,6 +313,25 @@ sub handle_nick_taken {
     my ($irc, $data, @args) = @_;
     my $nick = $args[3];
     $irc->fire_event(nick_taken => $nick);
+}
+
+sub handle_quit {
+    my ($irc, $data, @args) = @_;
+    my $user   = $irc->new_user_from_string($args[0]);
+    my $reason = defined $args[2] ? IRC::Utils::col((split /\s+/, $data, 3)[2]) : undef;
+
+    # remove user from all channels
+    foreach my $channel ($user->channels) {
+        $channel->remove_user($user);
+        $channel->fire_event(user_quit => $user, $reason);
+    }
+
+    # remove user from IRC object
+    delete $user->{irc};
+    delete $irc->{users}->{$user->{nick}};
+
+    $user->fire_event(quit => $reason);
+    $irc->fire_event(user_quit => $user, $reason);
 }
 
 1
