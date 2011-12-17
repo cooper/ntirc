@@ -4445,4 +4445,4 @@ var overlay = $element('div');
 overlay.setAttribute('id', 'theme-overlay');
 document.body.appendChild(overlay);
 
-setTimeout(function () { overlay.fade('out'); }, 32400000);
+setTimeout(function () { overlay.fade('out'); }, 3000);
