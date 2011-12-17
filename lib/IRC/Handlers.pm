@@ -226,6 +226,7 @@ sub handle_part {
     my $user    = $irc->new_user_from_string($args[0]);
     my $channel = $irc->new_channel_from_name($args[2]);
     $channel->remove_user($user);
+    $channel->fire_event(user_parted => $user);
     $user->fire_event(parted_channel => $channel);
     $irc->fire_event(user_parted_channel => $user, $channel);
 }

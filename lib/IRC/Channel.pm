@@ -49,21 +49,27 @@ sub new_from_name {
 
 # INSTANCE METHODS
 
+# user is in channel?
+sub has_user {
+    my ($channel, $user) = @_;
+    return 1 if grep { $_ == $user } @{$channel->{users}};
+    return
+}
+
 # add a user to a channel
 sub add_user {
     my ($channel, $user) = @_;
-
-    # don't add if already there
-    return if grep { $_ == $user } @{$channel->{users}};
-
-    $channel->fire_event(user_join => $user);
-    push @{$channel->{users}}, $user
+    return if $channel->has_user($user);
+    push @{$channel->{users}}, $user;
+    $channel->fire_event(user_joined => $user);
 }
 
+# remove user from channel
 sub remove_user {
     my ($channel, $user) = @_;
-    $channel->fire_event(user_part => $user);
-    @{$channel->{users}} = grep { $_ != $user } @{$channel->{users}};
+    return unless $channel->has_user($user);
+    $channel->fire_event(user_remove => $user); # remove, not part, because it might be a quit or something
+    @{$channel->{users}} = grep { $_ != $user } @{$channel->{users}}
 }
 
 # change the channel topic
