@@ -101,12 +101,23 @@ sub set_nick {
     $user->fire_event(nick_change => $oldnick, $newnick);
 }
 
+
+# returns a list of channels the user is on
 sub channels {
     my ($user, @channels) = shift;
     foreach my $channel (values %{$user->{irc}->{channels}}) {
         push @channels, $channel if $channel->has_user($user)
     }
     return @channels
+}
+
+# in a common channel with..
+sub in_common {
+    my ($user, $other_user) = @_;
+    foreach my $channel ($user->channels) {
+        return 1 if $channel->has_user($other_user)
+    }
+    return
 }
 
 1

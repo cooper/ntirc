@@ -182,7 +182,7 @@ sub handle_privmsg {
     # find the target
     $target = $irc->channel_from_name($target) ||
               $irc->user_from_nick($target)    ||
-              do { if ($target =~ m/^[$$irc{ircd}{support}{chantypes}]/) {
+              do { if ($target =~ m/^[\Q$$irc{ircd}{support}{chantypes}\E]/) {
                        $irc->new_channel_from_name($target);
                    }
                    else {
