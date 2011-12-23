@@ -98,4 +98,28 @@ sub set_status {
     $channel->fire_event(set_user_status => $user, $level);
 }
 
+# get status(es) of a user
+sub user_status {
+    my ($channel, $user) = @_;
+    my @status;
+    foreach my $level (keys %{$channel->{status}}) {
+        foreach my $this_user (@{$channel->{status}->{$level}}) {
+            push @status, $level if $user == $this_user
+        }
+    }
+    return @status
+}
+
+# user is status or higher?
+sub user_is_status {
+    my ($channel, $user, $need) = @_;
+    foreach my $level (keys %{$channel->{status}}) {
+        foreach my $this_user (@{$channel->{status}->{$level}}) {
+            next unless $level >= $need;
+            return 1 if $user == $this_user;
+        }
+    }
+    return
+}
+
 1

@@ -179,6 +179,10 @@ AAAAAElFTkSuQmCC) repeat-x !important;
     table-layout: fixed;
 }
 
+.message-table td {
+    display: inline-block;
+}
+
 .topicbar {
     /* FIX: for some reason adding width:100% broke overflow:hidden.. */
     text-overflow: ellipsis;
@@ -218,7 +222,6 @@ AAAAAElFTkSuQmCC) repeat-x !important;
 }
 
 .nick, .asterisk {
-    width: 80px;
     vertical-align: top;
     font-family: monospace;
     text-align: right;
